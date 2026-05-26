@@ -1,0 +1,23 @@
+name: MERN CD
+
+on:
+  push:
+    branches: [main]
+
+jpobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+  steps:
+    - name: Execute remote SSH commands using password
+      uses: appleboy/ssh-action@v1
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd devops-mern-todo
+          git pull origin main
+          docker-compose down
+          docker-compose up --build -d
