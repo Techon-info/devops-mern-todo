@@ -25,16 +25,17 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: '18'
 
       - name: Waiting for MongoDB to be ready
         run: |
-          unril nc -z localhost 27017:27017; do
+          until nc -z localhost 27017:27017; do
             echo "Waiting for MongoDB..."
             sleep 2
           done
             echo "MongoDB is up"
-      - name: seed MongoDB
+            
+      - name: Seed MongoDB
         working-directory: ./backend
         run: |
           npm install
@@ -45,25 +46,4 @@ jobs:
         run: npm test
 
 
-    runs-on: ububtu-latest
-    needs: mongo-init
-
-    env:
-      PORT: ${{ secrets.PORT }}
-      MONGO_URI: ${{ secrets.MONGO_URI }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v6
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: 18
-      - name: Install Dependencies for backend 
-        working-directory: ./backend
-        run: npm install
-
-      - name: Running Backend Tests
-        working-directory: ./backend
-        run: npm test
+  
