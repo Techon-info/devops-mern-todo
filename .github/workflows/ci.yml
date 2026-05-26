@@ -5,9 +5,13 @@ on:
     branches: [main]
 
 jobs:
-  mongo-init:
+  mongo-init-test:
     runs-on: ububtu-latest
 
+    env:
+      PORT: ${{ secrets.PORT }}
+      MONGO_URI: ${{ secrets.MONGO_URI }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
     services:
       mongo:
         image: mongo
@@ -32,9 +36,12 @@ jobs:
         working-directory: ./backend
         run: |
           npm install
-          node seedTasksData.js 
+          node seedTasksData.js
+      - name: Running Backend Tests
+        working-directory: ./backend
+        run: npm test
 
-  test:
+
     runs-on: ububtu-latest
     needs: mongo-init
 
